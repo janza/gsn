@@ -1,0 +1,32 @@
+<virtual-sensor name="RabbitVSCurrent" priority="11">
+	<processing-class>
+		<class-name>gsn.vsensor.BridgeVirtualSensor</class-name>
+		<init-params>
+            <param name="sampling-rate"></param>
+        </init-params>
+		<output-structure>
+			<field name="TEMPERATURA" type="int" />
+		</output-structure>
+
+	</processing-class>
+	<description>Pracenje temperature u prostoriju gdje se nalazi posluzitelj </description>
+	<life-cycle pool-size="10" />
+	<addressing>
+		<predicate key="geographical">Fakultet elektrotehnike i racunarstva, Unska 3, Zagreb, Zavod za automatiku racunalno inzenjerstvo
+        </predicate>
+		<predicate key="LATITUDE">45.768</predicate>
+		<predicate key="LONGITUDE">15.854</predicate>
+	</addressing>
+	<storage history-size="600" />
+	<streams>
+		<stream name="input1">
+			<source alias="source12" sampling-rate="1" 
+storage-size="1">
+				<address wrapper="rabbit">
+					</address>
+				<query>select TEMPERATURA, TIMED from WRAPPER</query>
+			</source>
+			<query>select TEMPERATURA, TIMED from source12</query>
+		</stream>
+	</streams>
+</virtual-sensor>
