@@ -19,6 +19,7 @@ import java.util.*;
 import org.postgis.PGgeometry;
 import org.postgis.Point;
 
+
 public class GetSensorDataWithGeoPostGIS {
 
 
@@ -263,7 +264,7 @@ public class GetSensorDataWithGeoPostGIS {
         //check for aggregates, containing reserved word $union
         if (ref_query.indexOf(UNION_RESERVED_WORD) > 0) {
             StringBuilder unionOfAll = new StringBuilder();
-            if (unionElement != "") {
+            if (!unionElement.equals("")) {
                 System.out.println("what_to_repeat => " + unionElement);
                 for (int i = 0; i < listSensors.length; i++) {
                     unionOfAll.append(unionElement.replaceAll(SENSOR_RESERVED_WORD_REGEX, listSensors[i]));
@@ -308,7 +309,7 @@ public class GetSensorDataWithGeoPostGIS {
 
             // headers
             //sb.append("# Query: " + query + NEWLINE);
-            sb.append("# Query: " + reformattedQuery.replaceAll("\n","\n# ") + NEWLINE);
+            sb.append("# Query: ").append(reformattedQuery.replaceAll("\n", "\n# ")).append(NEWLINE);
 
             sb.append("# ");
             for (int col = 0; col < numCols; col++) {
@@ -352,17 +353,17 @@ public class GetSensorDataWithGeoPostGIS {
         return executeQuery(envelope, _query, matchingSensors, CSV_FORMAT);
     }
 
-    public static void main(String[] args) throws ParseException, SQLException {
-
-        String query = "select station, wind_speed, timed\n" +
-                "from ($union) as newtable\n" + "where wind_speed>15 \n" +
-                "order by wind_speed";
-        String matchingsensors = "station1,station2,station3";
-        String unionElement = "\"$sensor\" as station, wind_speed, timed as date from $sensor";
-
-        System.out.println("\n=====\n query: \n" + query);
-        System.out.println("\n=====\n reformatted: \n" + reformatQuery(query, matchingsensors, unionElement));
-    }
+//    public static void main(String[] args) throws ParseException, SQLException {
+//
+//        String query = "select station, wind_speed, timed\n" +
+//                "from ($union) as newtable\n" + "where wind_speed>15 \n" +
+//                "order by wind_speed";
+//        String matchingsensors = "station1,station2,station3";
+//        String unionElement = "\"$sensor\" as station, wind_speed, timed as date from $sensor";
+//
+//        System.out.println("\n=====\n query: \n" + query);
+//        System.out.println("\n=====\n reformatted: \n" + reformatQuery(query, matchingsensors, unionElement));
+//    }
 
     String makeStringFromList(List l) {
         StringBuilder sb = new StringBuilder();

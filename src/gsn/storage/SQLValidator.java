@@ -16,8 +16,8 @@ import org.h2.command.Parser;
 import org.h2.command.Prepared;
 import org.h2.command.dml.Select;
 import org.h2.engine.ConnectionInfo;
+import org.h2.engine.Engine;
 import org.h2.engine.Session;
-import org.h2.engine.SessionFactoryEmbedded;
 
 public class SQLValidator implements VSensorStateChangeListener {
 
@@ -39,8 +39,7 @@ public class SQLValidator implements VSensorStateChangeListener {
 		properties.put("password","");
 		String URL = "jdbc:h2:mem:test";
 		ConnectionInfo connInfo = new ConnectionInfo(URL,properties);
-		SessionFactoryEmbedded factory = new SessionFactoryEmbedded();
-		session = (Session) factory.createSession(connInfo);
+		session = Engine.getInstance().createSession(connInfo);
 		this.connection = DriverManager.getConnection(URL,properties);
 		
 		//This is only a workaround for queries containing 'UNIX_TIMESTAMP()' with no parameter.
@@ -150,14 +149,10 @@ public class SQLValidator implements VSensorStateChangeListener {
 			return null;
 		Parser parser = new Parser(session);
 		Prepared somePrepared;
-		try {
-			somePrepared = parser.parseOnly(query);
-			if (somePrepared instanceof Select && somePrepared.isQuery()) 
-				select = (Select) somePrepared;
-		} catch (SQLException e) {
-			logger.debug(e.getMessage(),e);
-		}
-		return select;
+        somePrepared = parser.prepare(query);
+        if (somePrepared instanceof Select && somePrepared.isQuery())
+            select = (Select) somePrepared;
+        return select;
 	}
 
     public static String addPkField(String query) {

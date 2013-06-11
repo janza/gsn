@@ -1,25 +1,23 @@
 package gsn.wrappers.rasip;
 
-import java.awt.image.BufferedImage;
-import java.io.ByteArrayOutputStream;
-import java.io.IOException;
-import java.io.Serializable;
-
-import javax.imageio.ImageIO;
-
-import net.coobird.thumbnailator.Thumbnails;
-
-import org.apache.log4j.Logger;
-
-import com.googlecode.javacv.FrameGrabber;
-import com.googlecode.javacv.cpp.opencv_core.IplImage;
-
 import gsn.beans.AddressBean;
 import gsn.beans.DataField;
 import gsn.beans.DataTypes;
 import gsn.beans.StreamElement;
+import gsn.utils.Base64;
 import gsn.utils.ParamParser;
 import gsn.wrappers.AbstractWrapper;
+import net.coobird.thumbnailator.Thumbnails;
+import org.apache.log4j.Logger;
+
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.Serializable;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URL;
 
 public class IPCamWrapper extends AbstractWrapper {
 	
@@ -28,12 +26,12 @@ public class IPCamWrapper extends AbstractWrapper {
     
     private transient DataField[] outputStructure = new DataField[]{new DataField("picture", "binary", "USB camera picture.")};
     
-	private static final String WRAPPER_NAME = "USBCamWrapper";
+	private static final String WRAPPER_NAME = "IPCamWrapper";
     private static final int DEFAULT_SAMPLING_RATE = 1;
     private static final int DEFAULT_WIDTH = 640;
     private static final int DEFAULT_HEIGHT = 480;
     private static final int DEFAULT_DEVICE_ID = 0;
-    private static final int DEFAULT_RATE = 60000;
+    private static final int DEFAULT_RATE = 1000;
     
     private int samplingRate = DEFAULT_SAMPLING_RATE;
     private int rate = DEFAULT_RATE;
@@ -41,46 +39,69 @@ public class IPCamWrapper extends AbstractWrapper {
     private int height = DEFAULT_HEIGHT;
     private int deviceId = DEFAULT_DEVICE_ID;
     
-  
+    @Override
+    public boolean sendToWrapper(String action, String[] paramNames,
+                              Object[] paramValues){
+
+        return true;
+    }
    
     @Override
     public void run() {
         while (isActive()) {
-        	FrameGrabber imageGrabber = null;
+
+            String user = "ivica";
+            String pass = "hiperion";
+            ByteArrayOutputStream baos = null;
             try {
-                Thread.sleep(rate);
-                
-                imageGrabber = FrameGrabber.createDefault(deviceId);
-                imageGrabber.start();
-                
-                IplImage img = imageGrabber.grab();            
-                
-                BufferedImage image = resizeImage(img.getBufferedImage());
-                
-                ByteArrayOutputStream baos = new ByteArrayOutputStream();
-                ImageIO.write(image, "JPEG", baos);
-                baos.flush();
+                URL url = new URL("http://161.53.67.95:8080/video/mjpg.cgi?profileid=1");
+
+                String authStr = user + ":" + pass;
+                String authEncoded = Base64.encodeToString(authStr.getBytes(), false);
+
+                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                connection.setRequestMethod("GET");
+                //connection.setDoOutput(true);
+                connection.setRequestProperty("Authorization", "Basic " + authEncoded);
+
+                baos = new ByteArrayOutputStream();
+
+                InputStream webStream = (InputStream) connection.getContent();
+
+                try(IPKameraStreamWrapper ipWrapper = new IPKameraStreamWrapper(webStream))
+                {
+                    ipWrapper.writeNextImage(baos);
+
+                } catch (Exception e) {
+                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                }
+
                 byte[] imageInByte = baos.toByteArray();
                 baos.close();
 
-                StreamElement streamElement = new StreamElement(new String[]{ "picture"}, 
-                		new Byte[]{DataTypes.BINARY}, 
-                		new Serializable[]{imageInByte}, 
-                		System.currentTimeMillis());
+                StreamElement streamElement = new StreamElement(new String[]{ "picture"},
+                        new Byte[]{DataTypes.BINARY},
+                        new Serializable[]{imageInByte},
+                        System.currentTimeMillis());
                 postStreamElement(streamElement);
+                Thread.sleep(rate);
+
+            } catch (MalformedURLException e1) {
+                // TODO Auto-generated catch block
+                e1.printStackTrace();
+            } catch (IOException e) {
+                // TODO Auto-generated catch block
+                e.printStackTrace();
             } catch (InterruptedException e) {
-               logger.error(e.getMessage(), e);
-            } catch (Exception e) {
-                logger.error(e.getMessage(), e);
+                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
             } finally {
-            	try{
-            		if(imageGrabber != null)
-            		imageGrabber.stop();
-            	} catch (Exception e)
-            	{
-            		logger.error(e.getMessage(), e);
-            	}
-            	
+                if (baos != null) {
+                    try {
+                        baos.close();
+                    } catch (IOException e) {
+                        e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                    }
+                }
             }
         }
     }

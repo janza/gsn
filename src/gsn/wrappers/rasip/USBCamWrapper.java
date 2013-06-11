@@ -67,6 +67,7 @@ public class USBCamWrapper extends AbstractWrapper {
                 		new Byte[]{DataTypes.BINARY}, 
                 		new Serializable[]{imageInByte}, 
                 		System.currentTimeMillis());
+
                 postStreamElement(streamElement);
             } catch (InterruptedException e) {
                logger.error(e.getMessage(), e);
