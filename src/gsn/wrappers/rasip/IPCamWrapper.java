@@ -17,6 +17,7 @@ import java.io.InputStream;
 import java.io.Serializable;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
+import java.net.ProtocolException;
 import java.net.URL;
 
 public class IPCamWrapper extends AbstractWrapper {
@@ -27,6 +28,7 @@ public class IPCamWrapper extends AbstractWrapper {
     private transient DataField[] outputStructure = new DataField[]{new DataField("picture", "binary", "USB camera picture.")};
     
 	private static final String WRAPPER_NAME = "IPCamWrapper";
+
     private static final int DEFAULT_SAMPLING_RATE = 1;
     private static final int DEFAULT_WIDTH = 640;
     private static final int DEFAULT_HEIGHT = 480;
@@ -38,11 +40,38 @@ public class IPCamWrapper extends AbstractWrapper {
     private int width = DEFAULT_WIDTH;
     private int height = DEFAULT_HEIGHT;
     private int deviceId = DEFAULT_DEVICE_ID;
+    private static String schema = "http://";
+    private static String serverName="161.53.67.96";
+    private static String port = "8080";
+    private static String user = "ivica";
+    private static String pass = "hiperion";
     
     @Override
     public boolean sendToWrapper(String action, String[] paramNames,
                               Object[] paramValues){
+        try {
+            if(action.equals("MOVE") && paramValues.length > 1)
+            {
+                int X = Integer.parseInt(paramValues[0].toString());
+                int Y = 0;
+                if(paramValues.length == 2)
+                    Y = Integer.parseInt(paramValues[1].toString());
 
+                URL url = new URL(schema + serverName + port + "/cgi/ptdc.cgi?command=set_relative_pos&posX=-"+ X + "&posY=" + Y) ;
+                String authStr = user + ":" + pass;
+                String authEncoded = Base64.encodeToString(authStr.getBytes(), false);
+                HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                connection.setRequestMethod("GET");
+                connection.getContent();
+            }
+
+        } catch (MalformedURLException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        } catch (ProtocolException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        } catch (IOException e) {
+            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+        }
         return true;
     }
    
@@ -50,8 +79,6 @@ public class IPCamWrapper extends AbstractWrapper {
     public void run() {
         while (isActive()) {
 
-            String user = "ivica";
-            String pass = "hiperion";
             ByteArrayOutputStream baos = null;
             try {
                 URL url = new URL("http://161.53.67.95:8080/video/mjpg.cgi?profileid=1");
@@ -61,7 +88,6 @@ public class IPCamWrapper extends AbstractWrapper {
 
                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                 connection.setRequestMethod("GET");
-                //connection.setDoOutput(true);
                 connection.setRequestProperty("Authorization", "Basic " + authEncoded);
 
                 baos = new ByteArrayOutputStream();
