@@ -4,13 +4,12 @@ import gsn.beans.AddressBean;
 import gsn.beans.DataField;
 import gsn.beans.DataTypes;
 import gsn.beans.StreamElement;
+import gsn.command.CommandWrapper;
 import gsn.utils.Base64;
 import gsn.utils.ParamParser;
 import gsn.wrappers.AbstractWrapper;
-import net.coobird.thumbnailator.Thumbnails;
 import org.apache.log4j.Logger;
 
-import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -20,7 +19,7 @@ import java.net.MalformedURLException;
 import java.net.ProtocolException;
 import java.net.URL;
 
-public class IPCamWrapper extends AbstractWrapper {
+public class IPCamWrapper extends AbstractWrapper implements CommandWrapper {
 	
 	private final transient Logger logger = Logger.getLogger(IPCamWrapper.class);
 	private static int threadCounter = 0;
@@ -34,6 +33,11 @@ public class IPCamWrapper extends AbstractWrapper {
     private static final int DEFAULT_HEIGHT = 480;
     private static final int DEFAULT_DEVICE_ID = 0;
     private static final int DEFAULT_RATE = 1000;
+    private static final int DEFAULT_PORT = 8080;
+    private static final String DEFAULT_USER = "ivica";
+    private static final String DEFAULT_PASS = "hiperion";
+    private static final String DEFAULT_SERVER_NAME = "161.53.67.95";
+    private static final int DEFAULT_PROFILE = 1;
     
     private int samplingRate = DEFAULT_SAMPLING_RATE;
     private int rate = DEFAULT_RATE;
@@ -41,27 +45,27 @@ public class IPCamWrapper extends AbstractWrapper {
     private int height = DEFAULT_HEIGHT;
     private int deviceId = DEFAULT_DEVICE_ID;
     private static String schema = "http://";
-    private static String serverName="161.53.67.95";
-    private static String port = "8080";
-    private static String user = "ivica";
-    private static String pass = "hiperion";
+    private static String serverName= DEFAULT_SERVER_NAME;
+    private static int port = DEFAULT_PORT;
+    private static String user = DEFAULT_USER;
+    private static String pass = DEFAULT_PASS;
+    private static int profile = DEFAULT_PROFILE;
     
     @Override
     public boolean sendToWrapper(String action, String[] paramNames,
                               Object[] paramValues){
         try {
-            logger.warn("Test uspješan!: " + action);
+            if(action.equals("MOVE") && paramValues.length > 1){
 
-            for (int i = 0; i < 2; i++){
-                logger.warn("Parametar: " + paramNames[i] + " ima vrijednost: " + paramValues[i]);
-            }
-            if(action.equals("MOVE") && paramValues.length > 1)
-            {
-                int X = Integer.parseInt(paramValues[0].toString());
+                int X = 0;
                 int Y = 0;
-                if(paramValues.length == 2)
-                    Y = Integer.parseInt(paramValues[1].toString());
 
+                if(paramValues.length == 2){
+                    X = parseNumber(paramValues[0].toString());
+                    Y = parseNumber(paramValues[1].toString());
+                } else if (paramValues.length == 1) {
+                    X = parseNumber(paramValues[0].toString());
+                }
                 URL url = new URL(schema + serverName + ":" + port + "/cgi/ptdc.cgi?command=set_relative_pos&posX="+ X + "&posY=" + Y) ;
                 String authStr = user + ":" + pass;
                 String authEncoded = Base64.encodeToString(authStr.getBytes(), false);
@@ -90,7 +94,7 @@ public class IPCamWrapper extends AbstractWrapper {
 
             ByteArrayOutputStream baos = null;
             try {
-                URL url = new URL("http://161.53.67.95:8080/video/mjpg.cgi?profileid=1");
+                URL url = new URL(schema + serverName + ":" + port +"/video/mjpg.cgi?profileid=" + profile);
 
                 String authStr = user + ":" + pass;
                 String authEncoded = Base64.encodeToString(authStr.getBytes(), false);
@@ -108,7 +112,7 @@ public class IPCamWrapper extends AbstractWrapper {
                     ipWrapper.writeNextImage(baos);
 
                 } catch (Exception e) {
-                    e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                    logger.error(e);
                 }
 
                 byte[] imageInByte = baos.toByteArray();
@@ -122,19 +126,17 @@ public class IPCamWrapper extends AbstractWrapper {
                 Thread.sleep(rate);
 
             } catch (MalformedURLException e1) {
-                // TODO Auto-generated catch block
-                e1.printStackTrace();
+                logger.error(e1);
             } catch (IOException e) {
-                // TODO Auto-generated catch block
-                e.printStackTrace();
+                logger.error(e);
             } catch (InterruptedException e) {
-                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                logger.error(e);
             } finally {
                 if (baos != null) {
                     try {
                         baos.close();
                     } catch (IOException e) {
-                        e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                       logger.error(e);
                     }
                 }
             }
@@ -180,7 +182,34 @@ public class IPCamWrapper extends AbstractWrapper {
                     deviceId = DEFAULT_DEVICE_ID;
                 }
             }
-            
+
+            if(addressBean.getPredicateValue("port") != null){
+                port = ParamParser.getInteger(addressBean.getPredicateValue("port"), DEFAULT_PORT);
+                if (port <= 0) {
+                    port = DEFAULT_PORT;
+                }
+            }
+
+            if(addressBean.getPredicateValue("profile") != null){
+                profile = ParamParser.getInteger(addressBean.getPredicateValue("profile"), DEFAULT_PROFILE);
+                if (profile < 1 || profile > 3) {
+                    profile = DEFAULT_PROFILE;
+                }
+            }
+
+            if(addressBean.getPredicateValue("server-name") != null){
+                serverName = addressBean.getPredicateValue("server-name");
+            }
+
+            if(addressBean.getPredicateValue("user") != null){
+                user = addressBean.getPredicateValue("user");
+            }
+
+            if(addressBean.getPredicateValue("pass") != null){
+                pass = addressBean.getPredicateValue("pass");
+            }
+
+
             return true;
         } catch (Exception ex) {
             logger.error(ex);
@@ -198,8 +227,16 @@ public class IPCamWrapper extends AbstractWrapper {
         return WRAPPER_NAME;
     }
     
-    private BufferedImage resizeImage(BufferedImage image) throws IOException{
-        return Thumbnails.of(image).size(this.width, this.height).asBufferedImage();
+
+    private int parseNumber(String number){
+        if(number == null || number.equals("") )
+            return 0;
+        else{
+            int x = Integer.parseInt(number);
+
+            return x;
+        }
+
     }
 
 }

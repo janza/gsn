@@ -13,9 +13,11 @@ import java.io.OutputStream;
  */
 public class IPKameraStreamWrapper implements AutoCloseable {
 
-    // Od
+    // FF označava početak bilo koje komande u JFIF formatu
     private static int MARKER = 0xFF;
+    // Ako pri tom slijedi 0xD( znači da se radi o početku slike
     private static int IMAGE_START = 0xD8;
+    // Ukoliko slijedi 0xD9, utoliko završava slika
     private static int IMAGE_END = 0xD9;
 
     private InputStream _baseStream;
