@@ -134,7 +134,7 @@ public abstract class AbstractVirtualSensor {
 	public abstract void dispose ( );
 
 	public boolean dataFromWeb ( String action,String[] paramNames, Serializable[] paramValues ) {
-		return false;
+        return false;
 	}
 
 	/**

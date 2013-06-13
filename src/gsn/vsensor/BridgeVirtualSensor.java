@@ -1,9 +1,15 @@
 package gsn.vsensor;
 
+import gsn.beans.InputStream;
 import gsn.beans.StreamElement;
 
+import gsn.beans.StreamSource;
 import gsn.beans.VSensorConfig;
+import gsn.wrappers.AbstractWrapper;
 import org.apache.log4j.Logger;
+
+import javax.naming.OperationNotSupportedException;
+import java.io.Serializable;
 import java.util.TreeMap;
 
 public class BridgeVirtualSensor extends AbstractVirtualSensor {
@@ -49,6 +55,31 @@ public class BridgeVirtualSensor extends AbstractVirtualSensor {
 
     public void dispose() {
 
+    }
+
+    public boolean dataFromWeb ( String action,String[] paramNames, Serializable[] paramValues ){
+        VSensorConfig config = this.getVirtualSensorConfiguration();
+        boolean sent = false;
+        for (InputStream is : config.getInputStreams()){
+             for(StreamSource ss : is.getSources()){
+                 AbstractWrapper wrapper = ss.getWrapper();
+                 logger.warn(wrapper.getWrapperName());
+                 try {
+                     sent |= wrapper.sendToWrapper(action, paramNames, paramValues);
+                 } catch (OperationNotSupportedException e) {
+                     e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+                 }
+             }
+            logger.warn(is.getInputStreamName());
+//            AbstractWrapper wrapper = is.getSource(is.getInputStreamName()).getWrapper();
+//            try {
+//               sent |= wrapper.sendToWrapper(action, paramNames, paramValues);
+//            } catch (OperationNotSupportedException e) {
+//                e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+//            }
+        }
+
+        return sent;
     }
 
 }

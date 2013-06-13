@@ -41,7 +41,7 @@ public class IPCamWrapper extends AbstractWrapper {
     private int height = DEFAULT_HEIGHT;
     private int deviceId = DEFAULT_DEVICE_ID;
     private static String schema = "http://";
-    private static String serverName="161.53.67.96";
+    private static String serverName="161.53.67.95";
     private static String port = "8080";
     private static String user = "ivica";
     private static String pass = "hiperion";
@@ -50,6 +50,11 @@ public class IPCamWrapper extends AbstractWrapper {
     public boolean sendToWrapper(String action, String[] paramNames,
                               Object[] paramValues){
         try {
+            logger.warn("Test uspješan!: " + action);
+
+            for (int i = 0; i < 2; i++){
+                logger.warn("Parametar: " + paramNames[i] + " ima vrijednost: " + paramValues[i]);
+            }
             if(action.equals("MOVE") && paramValues.length > 1)
             {
                 int X = Integer.parseInt(paramValues[0].toString());
@@ -57,20 +62,24 @@ public class IPCamWrapper extends AbstractWrapper {
                 if(paramValues.length == 2)
                     Y = Integer.parseInt(paramValues[1].toString());
 
-                URL url = new URL(schema + serverName + port + "/cgi/ptdc.cgi?command=set_relative_pos&posX=-"+ X + "&posY=" + Y) ;
+                URL url = new URL(schema + serverName + ":" + port + "/cgi/ptdc.cgi?command=set_relative_pos&posX="+ X + "&posY=" + Y) ;
                 String authStr = user + ":" + pass;
                 String authEncoded = Base64.encodeToString(authStr.getBytes(), false);
+
                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+                connection.setRequestProperty("Authorization", "Basic " + authEncoded);
                 connection.setRequestMethod("GET");
-                connection.getContent();
+
+                logger.warn(connection.getURL());
+                logger.warn(connection.getResponseMessage());
             }
 
         } catch (MalformedURLException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            return false;
         } catch (ProtocolException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            return false;
         } catch (IOException e) {
-            e.printStackTrace();  //To change body of catch statement use File | Settings | File Templates.
+            return false;
         }
         return true;
     }

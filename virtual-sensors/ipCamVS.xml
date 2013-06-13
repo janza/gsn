@@ -1,6 +1,12 @@
 <virtual-sensor name="ipCamVS" priority="11">
 	<processing-class>
 		<class-name>gsn.vsensor.BridgeVirtualSensor</class-name>
+		<web-input>
+			<command name="MOVE">
+				<field name="X" type="int"/>
+				<field name="Y" type="int"/>
+			</command>
+		</web-input>
 		<output-structure>
 			<field name="picture" type="binary:image/jpeg" />
 		</output-structure>
