@@ -55,11 +55,11 @@ public class IPCamWrapper extends AbstractWrapper implements CommandWrapper {
     public boolean sendToWrapper(String action, String[] paramNames,
                               Object[] paramValues){
         try {
-            if(action.equals("MOVE") && paramValues.length > 1){
+            logger.warn("U wrapperu!");
+            if(action.equals("MOVE") && paramValues.length >= 1){
 
                 int X = 0;
                 int Y = 0;
-
                 if(paramValues.length == 2){
                     X = parseNumber(paramValues[0].toString());
                     Y = parseNumber(paramValues[1].toString());
