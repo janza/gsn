@@ -521,8 +521,8 @@
 
    <security-constraint>
    <web-resource-collection>
-     <web-resource-name>LoginHandlerServlet</web-resource-name>
-     <url-pattern>/gsn/loginhandlerservlet</url-pattern>
+     <web-resource-name>Everything in the webapp</web-resource-name>
+     <url-pattern>/*</url-pattern>
    </web-resource-collection>
    <user-data-constraint>
      <transport-guarantee>CONFIDENTIAL</transport-guarantee>
