@@ -6,6 +6,13 @@
 				<field name="X" type="int"/>
 				<field name="Y" type="int"/>
 			</command>
+			<command name="ABS_MOVE">
+				<field name="X" type="int"/>
+				<field name="Y" type="int"/>
+			</command>
+			<command name="RST">
+				<field name="UnosNepotreban" type="bool"/>
+			 </command>
 		</web-input>
 		<output-structure>
 			<field name="picture" type="binary:image/jpeg" />
@@ -16,7 +23,6 @@
 	<addressing>
 		<predicate key="geographical">Not Specified!</predicate>
 	</addressing>
-	<storage history-size="20000"/>
 	<streams>
 		<stream name="DATA">
 			<source alias="sourceCam" storage-size="1" sampling-rate="1">

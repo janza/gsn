@@ -11,7 +11,7 @@ import java.io.OutputStream;
  * Time: 16:21
  * To change this template use File | Settings | File Templates.
  */
-public class IPKameraStreamWrapper implements AutoCloseable {
+public class IPKameraStreamWrapper {
 
     // FF oznacava pocetak bilo koje komande u JFIF formatu
     private static int MARKER = 0xFF;
@@ -62,7 +62,6 @@ public class IPKameraStreamWrapper implements AutoCloseable {
         }
     }
 
-    @Override
     public void close() throws Exception {
         _baseStream.close();
     }

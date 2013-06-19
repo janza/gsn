@@ -50,34 +50,80 @@ public class IPCamWrapper extends AbstractWrapper implements CommandWrapper {
     private static String user = DEFAULT_USER;
     private static String pass = DEFAULT_PASS;
     private static int profile = DEFAULT_PROFILE;
+
+    private static String MOVE = "MOVE";
+    private static String ABSOLUTE_MOVE ="ABS_MOVE";
+    private static String RESET="RST";
     
     @Override
     public boolean sendToWrapper(String action, String[] paramNames,
                               Object[] paramValues){
-        try {
-            logger.warn("U wrapperu!");
-            if(action.equals("MOVE") && paramValues.length >= 1){
+        if(action.equals(MOVE)){
+            if(paramValues.length < 1)
+                return false;
+            logger.warn("U wrapperu");
+            int X = 0;
+            int Y = 0;
+            if(paramValues.length >= 2){
+                X = parseNumber(paramValues[0].toString());
+                Y = parseNumber(paramValues[1].toString());
+            } else if (paramValues.length == 1) {
+                X = parseNumber(paramValues[0].toString());
+            }
+            return Move(X, Y);
+        } else if (action.equals(ABSOLUTE_MOVE)){
 
-                int X = 0;
-                int Y = 0;
-                if(paramValues.length == 2){
-                    X = parseNumber(paramValues[0].toString());
-                    Y = parseNumber(paramValues[1].toString());
-                } else if (paramValues.length == 1) {
-                    X = parseNumber(paramValues[0].toString());
-                }
-                URL url = new URL(schema + serverName + ":" + port + "/cgi/ptdc.cgi?command=set_relative_pos&posX="+ X + "&posY=" + Y) ;
+            if(paramValues.length < 1)
+                return false;
+
+            int X = 0;
+            int Y = 0;
+            if(paramValues.length >= 2){
+                X = parseNumber(paramValues[0].toString());
+                Y = parseNumber(paramValues[1].toString());
+            } else if (paramValues.length == 1) {
+                X = parseNumber(paramValues[0].toString());
+            }
+          return MoveAbs(X, Y);
+        } else if(action.equals(RESET)){
+              return MoveAbs(0,0);
+        }
+            return true;
+    }
+     private boolean MoveAbs(int X, int Y)
+     {
+         try {
+             String urlString =  schema + serverName + ":" + port + "/cgi/ptdc.cgi?command=set_pos&posX="+ X + "&posY=" + Y;
+             logger.warn("Url je: " + urlString);
+             URL url = new URL(urlString);
+             String authStr = user + ":" + pass;
+             String authEncoded = Base64.encodeToString(authStr.getBytes(), false);
+
+             HttpURLConnection connection = (HttpURLConnection) url.openConnection();
+             connection.setRequestProperty("Authorization", "Basic " + authEncoded);
+             connection.setRequestMethod("GET");
+             connection.getResponseMessage();
+         } catch (MalformedURLException e) {
+             return false;
+         } catch (ProtocolException e) {
+             return false;
+         } catch (IOException e) {
+             return false;
+         }
+         return true;
+     }
+     private boolean Move(int X, int Y) {
+        try {
+                String urlString =  schema + serverName + ":" + port + "/cgi/ptdc.cgi?command=set_relative_pos&posX="+ X + "&posY=" + Y;
+                logger.warn("Url je: " + urlString);
+                URL url = new URL(urlString);
                 String authStr = user + ":" + pass;
                 String authEncoded = Base64.encodeToString(authStr.getBytes(), false);
 
                 HttpURLConnection connection = (HttpURLConnection) url.openConnection();
                 connection.setRequestProperty("Authorization", "Basic " + authEncoded);
                 connection.setRequestMethod("GET");
-
-                logger.warn(connection.getURL());
-                logger.warn(connection.getResponseMessage());
-            }
-
+                connection.getResponseMessage();
         } catch (MalformedURLException e) {
             return false;
         } catch (ProtocolException e) {
@@ -87,7 +133,7 @@ public class IPCamWrapper extends AbstractWrapper implements CommandWrapper {
         }
         return true;
     }
-   
+
     @Override
     public void run() {
         while (isActive()) {
@@ -106,13 +152,20 @@ public class IPCamWrapper extends AbstractWrapper implements CommandWrapper {
                 baos = new ByteArrayOutputStream();
 
                 InputStream webStream = (InputStream) connection.getContent();
-
-                try(IPKameraStreamWrapper ipWrapper = new IPKameraStreamWrapper(webStream))
-                {
-                    ipWrapper.writeNextImage(baos);
+                IPKameraStreamWrapper ipStream = null;
+                try{
+                    ipStream = new IPKameraStreamWrapper(webStream);
+                    ipStream.writeNextImage(baos);
 
                 } catch (Exception e) {
                     logger.error(e);
+                } finally {
+                    try {
+                        if(ipStream != null)
+                            ipStream.close();
+                    } catch (Exception e) {
+                        logger.warn("Could not close IP Cam stream: " + e.getStackTrace());
+                    }
                 }
 
                 byte[] imageInByte = baos.toByteArray();
