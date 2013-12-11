@@ -56,32 +56,19 @@ public class MyUserCandidateRegistrationServlet extends HttpServlet
 	{
         out.println("<HTML>");
         out.println("<HEAD>");
-        //For Java Script!!
-        //this.printEmbeddedJS(out);
-        out.println("<script type=\"text/javascript\" src=\"/js/acjavascript.js\"></script>");
-		out.println("<TITLE>Sign Up Form</TITLE>");
-        out.println(" <link rel=\"stylesheet\" media=\"screen\" type=\"text/css\" href=\"/style/acstyle.css\"/>");
-        //printStyle(out);
+        out.println("<TITLE>Access Rights Management</TITLE>");
+        out.println(" <link rel=\"stylesheet\" media=\"screen\" type=\"text/css\" href=\"/style/foundation.css\"/>");
+        out.println(" <link rel=\"stylesheet\" media=\"screen\" type=\"text/css\" href=\"/style/app.css\"/>");
         out.println("</HEAD>");
         out.println("<body>");
-
-        out.println("<div id=\"container\">");
-        out.println("<div class=box>");
+        out.println("<div class=\"columns\"><br /><br /><br /></div><div class=\"contain-to-grid fixed\"><nav class=\"top-bar sticky\"><div class=\"row\"><ul class=\"title-area\"><li class=\"name\"><h1><a href='#'><strong>GSN Server</strong></a></h1></li></ul><strong><section id=\"navigation\" class=\"top-bar-section\"></section></strong></div></nav></div>");
+        out.println("<div id=\"container\" class=row>");
+        out.println("<div class='box columns'>");
+        out.println("<h1>Sign Up Form</h1>");
 
 	}
     private void printLayoutMastHead(PrintWriter out)
     {
-        out.println("<div id=\"masthead\">");
-
-        out.println("<div class=\"image_float\"><img src=\"/style/gsn-mark.png\" alt=\"GSN logo\" /></div><br>");
-        out.println("<h1>Sign Up Form </h1>");
-        out.println("<div class=\"spacer\"></div>");
-
-        out.println("</div>");
-        out.println("<div id=\"mastheadborder\">");
-        this.printLinks(out);
-        out.println("<br><br>");
-        out.println("</div>");
     }
     private void printLayoutContent(PrintWriter out)
     {
@@ -90,18 +77,20 @@ public class MyUserCandidateRegistrationServlet extends HttpServlet
     private void printLayoutFooter(PrintWriter out)
     {
         out.println("</div>");
-        out.println("<div id=\"footer\">");
+        out.println("<div id=\"footer\" class='medium-12 columns'> ");
         out.println(" <p align=\"center\"><FONT COLOR=\"#000000\"/>Powered by <a class=\"nonedecolink\" href=\"http://globalsn.sourceforge.net/\">GSN</a>,  Distributed Information Systems Lab, EPFL 2010</p>");
-        out.println("</div>");
-        out.println("</div>");
-        out.println("</div>");
+        out.println("</div>");//footer
+        out.println("</div>");//box
+        out.println("</div>");//container
+        out.println("<script src=\"//ajax.googleapis.com/ajax/libs/jquery/1.8/jquery.min.js\"></script>");
+        out.println("<script type='text/javascript' src='/js/manager.js'></script>");
         out.println("</body>");
         out.println("</html>");
     }
     private void printLinks(PrintWriter out)
     {
         out.println("<a class=linkclass href=\"/\">GSN home</a>");
-        out.println("<a class=linkclass href=/gsn/MyAccessRightsManagementServlet>access rights management</a>");   
+        out.println("<a class=linkclass href=/gsn/MyAccessRightsManagementServlet>access rights management</a>");
     }
      private void printForm(PrintWriter out) throws ServletException
 	{
@@ -147,7 +136,7 @@ public class MyUserCandidateRegistrationServlet extends HttpServlet
         out.println("<tr><th>first name</th><td><INPUT class=inputclass TYPE=TEXT NAME=firstname size=30></td></tr>");
         out.println("<tr><th>last name</th><td><INPUT class=inputclass TYPE=TEXT NAME=lastname size=30></td></tr>");
         out.println("<tr><th>E-mail</th><td><INPUT class=inputclass TYPE=TEXT NAME=email  size=30 ></td></tr>");
-        
+
         out.println("</table>");
 
     }
@@ -163,7 +152,7 @@ public class MyUserCandidateRegistrationServlet extends HttpServlet
     private void printFormButtons(PrintWriter out)
     {
         //out.println("<table class=transparenttable>");
-        out.println("<INPUT TYPE=SUBMIT class=bigsumitbuttonstyle VALUE=\"Submit \">");
+        out.println("<INPUT TYPE=SUBMIT class=button VALUE=\"Submit \">");
         //out.println("<td><INPUT TYPE=RESET class=changegroupbuttonstyle VALUE=\"Reset\"></td></tr>");
         out.println("</table>");
     }
@@ -202,7 +191,7 @@ public class MyUserCandidateRegistrationServlet extends HttpServlet
             }
             out.println("</table>");
         }
-    } 
+    }
     private void printGroupName(PrintWriter out, String groupname)
     {
         out.println("<td>"+groupname +"</td>");
@@ -213,7 +202,7 @@ public class MyUserCandidateRegistrationServlet extends HttpServlet
     }
     private void printGroupStructureLink(PrintWriter out, String groupname)
     {
-        String groupurl="/gsn/MyGroupHtmlResultSetServlet?groupname="+groupname;                                                           
+        String groupurl="/gsn/MyGroupHtmlResultSetServlet?groupname="+groupname;
         out.println("<ul class=displaylinkul >");
 
         out.println("<td style=text-align:center><LI class=displaylinkli><a href="+groupurl+" onClick=\"poptastic(this.href); return false;\">&nbsp&nbsp&nbsp view &nbsp&nbsp&nbsp</a></LI>");
@@ -265,7 +254,7 @@ public class MyUserCandidateRegistrationServlet extends HttpServlet
 		}
         catch(Exception e)
         {
-            
+
             logger.error("ERROR IN getGroupList");
 			logger.error(e.getMessage(),e);
         }

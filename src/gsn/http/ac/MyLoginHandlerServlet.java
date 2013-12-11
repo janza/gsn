@@ -35,7 +35,7 @@ public class MyLoginHandlerServlet extends HttpServlet
 		printForm(out);
 		printFooter(out);
     }
-    public void doPost(HttpServletRequest req, HttpServletResponse res)throws ServletException, IOException
+    public void doPost(HttpServletRequest req, HttpServletResponse res) throws ServletException, IOException
 	{
         doGet(req,res);
         handleForm(req, res);
@@ -45,46 +45,53 @@ public class MyLoginHandlerServlet extends HttpServlet
     /***********************************************************************************************************/
 
     private void printHeader(PrintWriter out) throws ServletException
-	{
+    {
         out.println("<HTML>");
         out.println("<HEAD>");
-        out.println("<script type=\"text/javascript\" src=\"/js/acjavascript.js\"></script>");
-		out.println("<TITLE>Login Form</TITLE>");
-        out.println(" <link rel=\"stylesheet\" media=\"screen\" type=\"text/css\" href=\"/style/acstyle.css\"/>");
+        out.println("<TITLE>Access Rights Management</TITLE>");
+        out.println(" <link rel=\"stylesheet\" media=\"screen\" type=\"text/css\" href=\"/style/foundation.css\"/>");
+        out.println(" <link rel=\"stylesheet\" media=\"screen\" type=\"text/css\" href=\"/style/app.css\"/>");
         out.println("</HEAD>");
-		out.println("<BODY class=loginhandlerbody>");
-      }
+        out.println("<body class=loginhandlerbody>");
+        out.println("<div class=\"columns\"><br /><br /><br /></div><div class=\"contain-to-grid fixed\"><nav class=\"top-bar sticky\"><div class=\"row\"><ul class=\"title-area\"><li class=\"name\"><h1><a href='#'><strong>GSN Server</strong></a></h1></li></ul><strong><section id=\"navigation\" class=\"top-bar-section\"></section></strong></div></nav></div>");
+        out.println("<div id=\"container\" class=row>");
+        out.println("<div class='box'>");
 
-
+    }
 
     private void printForm(PrintWriter out)
     {
         out.println("<div id=\"loginhandlercontainer\">");
-        out.println(" <form method=\"post\" id=\"enquiryform\">");
-        out.println("<fieldset>");
+        out.println(" <form method=\"post\" id=\"enquiryform\" class='row'>");
+        out.println("<fieldset class='columns medium-6 small-centered'>");
         out.println("<legend>Login Form</legend>");
         out.println("<BR>");
 
 
 
         this.printFormInputs(out);
+        out.println("<input type=\"submit\" class=\"button small loginhandlerbuttonstyle\" value=\"Login\" tabindex=\"3\" />");
         out.println("</fieldset>");
 
-        out.println("<input type=\"submit\" class=\"loginhandlerbuttonstyle\" value=\"Login\" tabindex=\"3\" />");
 
 
         out.println("</form>");
         out.println("</div>");
         out.println("<HR>");
     }
-
     private void printFooter(PrintWriter out) throws ServletException
-	{
-		out.println("</BODY>");
-        out.println("<div class=loginhandlerlink>");
-        out.println("<p align=right><A  HREF=\"/\"> GSN home</a></p>");
+    {
         out.println("</div>");
-	}
+        out.println("<div id=\"footer\" class='medium-12 columns'> ");
+        out.println(" <p align=\"center\"><FONT COLOR=\"#000000\"/>Powered by <a class=\"nonedecolink\" href=\"http://globalsn.sourceforge.net/\">GSN</a>,  Distributed Information Systems Lab, EPFL 2010</p>");
+        out.println("</div>");//footer
+        out.println("</div>");//box
+        out.println("</div>");//container
+        out.println("<script src=\"//ajax.googleapis.com/ajax/libs/jquery/1.8/jquery.min.js\"></script>");
+        out.println("<script type='text/javascript' src='/js/manager.js'></script>");
+        out.println("</body>");
+        out.println("</html>");
+    }
     private void printFormInputs(PrintWriter out)
     {
         out.println("<p><label for=\"name\">username </label><br>");
@@ -268,7 +275,7 @@ public class MyLoginHandlerServlet extends HttpServlet
 
     private void createAlertBox(PrintWriter out, String alertMessage)
     {
-        out.println("<div id=\"AlertBox\" class=\"alert\">");
+        out.println("<div id=\"AlertBox\" class=\"reveal-modal\">");
         out.println("<p>");
         out.println(alertMessage );
         out.println("</p>");

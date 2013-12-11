@@ -62,16 +62,15 @@ public class MyUserUpdateServlet  extends HttpServlet
 	{
         out.println("<HTML>");
         out.println("<HEAD>");
-        //For Java Script!!
-        //this.printEmbeddedJS(out);
-        out.println("<script type=\"text/javascript\" src=\"/js/acjavascript.js\"></script>");
-        out.println("<TITLE>User Update</TITLE>");
-        out.println(" <link rel=\"stylesheet\" media=\"screen\" type=\"text/css\" href=\"/style/acstyle.css\"/>");
-        //printStyle(out);
+        out.println("<TITLE>Access Rights Management</TITLE>");
+        out.println(" <link rel=\"stylesheet\" media=\"screen\" type=\"text/css\" href=\"/style/foundation.css\"/>");
+        out.println(" <link rel=\"stylesheet\" media=\"screen\" type=\"text/css\" href=\"/style/app.css\"/>");
         out.println("</HEAD>");
-        out.println("<body onload=\"loadScroll()\" onunload=\"saveScroll()\" >");
-        out.println("<div id=\"container\">");
-        out.println("<div class=box>");
+        out.println("<body>");
+        out.println("<div class=\"columns\"><br /><br /><br /></div><div class=\"contain-to-grid fixed\"><nav class=\"top-bar sticky\"><div class=\"row\"><ul class=\"title-area\"><li class=\"name\"><h1><a href='#'><strong>GSN Server</strong></a></h1></li></ul><strong><section id=\"navigation\" class=\"top-bar-section\"></section></strong></div></nav></div>");
+        out.println("<div id=\"container\" class=row>");
+        out.println("<div class='box columns'>");
+        out.println("<h1>Update Access Rights Form</h1>");
 	}
      ///gsn/MyLogoutHandlerServlet
     private void printForm(PrintWriter out,User user)
@@ -107,23 +106,11 @@ public class MyUserUpdateServlet  extends HttpServlet
 
     private void printLayoutMastHead(PrintWriter out, User user)
     {
-        out.println("<div id=\"masthead\">");
-
-        out.println("<div class=\"image_float\"><img src=\"/style/gsn-mark.png\" alt=\"GSN logo\" /></div><br>");
-        out.println("<h1>Update Access Rights Form </h1>");
-        out.println("<div class=\"spacer\"></div>");
-
-        out.println("</div>");
-        out.println("<div id=\"mastheadborder\">");
-        this.printLinks(out);
-        this.printUserName(out, user);
-        out.println("<br><br>");
-        out.println("</div>");
     }
     private void printLayoutContent(PrintWriter out, User user, ConnectToDB ctdb)throws SQLException
     {
-        //out.println("<div id=\"content\">");
-        out.println("<div id=\"twocolumnscontent\">");
+        out.println("<div id=\"content\" class='row'>");
+        out.println("<div id=\"twocolumnscontent\" class='columns medium-6'>");
         this.printGroupSection(out, user, ctdb);
         out.println("</div>");
 
@@ -131,51 +118,54 @@ public class MyUserUpdateServlet  extends HttpServlet
 
     private void printLayoutSideBar(PrintWriter out, User user, ConnectToDB ctdb)throws SQLException
     {
-        out.println("<div id=\"sidebar\">");
+        out.println("<div id=\"sidebar\" class='columns medium-6'>");
         this.printDataSourceSection(out, user, ctdb);
+        out.println("</div>");
         out.println("</div>");
     }
 
     private void printLayoutFooter(PrintWriter out)
     {
-        out.println("<div id=\"twocolumnsfooter\">");
-        out.println("<p align=center><FONT COLOR=#000000>Powered by <a class=nonedecolink href=\"http://globalsn.sourceforge.net/\">GSN</a>,  Distributed Information Systems Lab, EPFL 2010</p>");
+        out.println("</div>");
+        out.println("<div id=\"footer\" class='medium-12 columns'> ");
+        out.println(" <p align=\"center\"><FONT COLOR=\"#000000\"/>Powered by <a class=\"nonedecolink\" href=\"http://globalsn.sourceforge.net/\">GSN</a>,  Distributed Information Systems Lab, EPFL 2010</p>");
         out.println("</div>");//footer
         out.println("</div>");//box
         out.println("</div>");//container
-        out.println("<BR>");
-        //out.println("<HR>");
-        out.println("</BODY>");
+        out.println("<script src=\"//ajax.googleapis.com/ajax/libs/jquery/1.8/jquery.min.js\"></script>");
+        out.println("<script type='text/javascript' src='/js/manager.js'></script>");
+        out.println("</body>");
         out.println("</html>");
 
     }
 
     private void printDataSourceSection(PrintWriter out, User user, ConnectToDB ctdb) throws SQLException
     {
-        out.println("<h2>");
+        out.println("<h5>");
         out.println("You have access to these virtual sensors : ");
-        out.println("</h2>");
+        out.println("</h5>");
         out.println("<p>");
         this.printUserDataSourceList(out,user,ctdb);
         out.println("</p>");
-        out.println("<h2>");
+        out.println("<h5>");
         out.println("Other virtual sensors in the system :");
-        out.println("</h2>");
+        out.println("</h5>");
         out.println("<p>");
         this.printRemainingDataSourcesList(out,user,ctdb);
         out.println("</p>");
     }
     private void printGroupSection(PrintWriter out, User user, ConnectToDB ctdb) throws SQLException
     {
-        out.println("<h2>");
+
+        out.println("<h5>");
         out.println("You have access to these groups :");
-        out.println("</h2>");
+        out.println("</h5>");
         out.println("<p>");
         this.printUserGroupList(out,user,ctdb);
         out.println("</p>");
-        out.println("<h2>");
+        out.println("<h5>");
         out.println("Other groups in the system :");
-        out.println("</h2>");
+        out.println("</h5>");
         out.println("<p>");
         this.printRemainingGroupsList(out,user,ctdb);
         out.println("</p>");
@@ -231,7 +221,7 @@ public class MyUserUpdateServlet  extends HttpServlet
                     out.println("<FORM ACTION=/gsn/MyUpdateUserWaitingForGroupServlet METHOD=POST>");
                     out.println("<INPUT  TYPE=HIDDEN NAME=groupname VALUE="+groupName+">");
                     out.println("<INPUT  TYPE=HIDDEN NAME=deletegroup VALUE=Yes>");
-                    out.println("<td style=text-align:center><INPUT TYPE=SUBMIT class= buttonstyle  VALUE=\"delete\"></td>");
+                    out.println("<td style=text-align:center><INPUT TYPE=SUBMIT class='button alert'  VALUE=\"delete\"></td>");
                     out.println("</FORM>");
                 }
                 else

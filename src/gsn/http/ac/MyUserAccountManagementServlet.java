@@ -37,11 +37,10 @@ public class MyUserAccountManagementServlet   extends HttpServlet
        {
            this.checkSessionScheme(req,res);
            this.printHeader(out);
-           this.printLayoutMastHead(out, user );
            this.printLayoutContent(out);
            this.printUserAccountLinks(out);
            this.printLayoutFooter(out);
-  
+
        }
     }
     public void doPost(HttpServletRequest req, HttpServletResponse res)throws ServletException, IOException
@@ -57,13 +56,16 @@ public class MyUserAccountManagementServlet   extends HttpServlet
 	{
         out.println("<HTML>");
         out.println("<HEAD>");
-		out.println("<TITLE>User Account Management</TITLE>");
-        out.println(" <link rel=\"stylesheet\" media=\"screen\" type=\"text/css\" href=\"/style/acstyle.css\"/>");
-        //printStyle(out);
+        out.println("<TITLE>Access Rights Management</TITLE>");
+        out.println(" <link rel=\"stylesheet\" media=\"screen\" type=\"text/css\" href=\"/style/foundation.css\"/>");
+        out.println(" <link rel=\"stylesheet\" media=\"screen\" type=\"text/css\" href=\"/style/app.css\"/>");
         out.println("</HEAD>");
         out.println("<body>");
-        out.println("<div id=\"container\">");
-        out.println("<div class=box>");
+        out.println("<div class=\"columns\"><br /><br /><br /></div><div class=\"contain-to-grid fixed\"><nav class=\"top-bar sticky\"><div class=\"row\"><ul class=\"title-area\"><li class=\"name\"><h1><a href='#'><strong>GSN Server</strong></a></h1></li></ul><strong><section id=\"navigation\" class=\"top-bar-section\"></section></strong></div></nav></div>");
+        out.println("<div id=\"container\" class=row>");
+        out.println("<div class='box columns'>");
+        out.println("<h1>User Account Management</h1>");
+
 
 	}
    private void printLayoutMastHead(PrintWriter out, User user)
@@ -76,9 +78,6 @@ public class MyUserAccountManagementServlet   extends HttpServlet
 
         out.println("</div>");
         out.println("<div id=\"mastheadborder\">");
-        this.printLinks(out);
-        this.printUserName(out, user);
-        out.println("<br><br>");
         out.println("</div>");
     }
     private void printLayoutContent(PrintWriter out)
@@ -88,11 +87,13 @@ public class MyUserAccountManagementServlet   extends HttpServlet
     private void printLayoutFooter(PrintWriter out)
     {
         out.println("</div>");
-        out.println("<div id=\"footer\">");
+        out.println("<div id=\"footer\" class='medium-12 columns'> ");
         out.println(" <p align=\"center\"><FONT COLOR=\"#000000\"/>Powered by <a class=\"nonedecolink\" href=\"http://globalsn.sourceforge.net/\">GSN</a>,  Distributed Information Systems Lab, EPFL 2010</p>");
         out.println("</div>");//footer
         out.println("</div>");//box
         out.println("</div>");//container
+        out.println("<script src=\"//ajax.googleapis.com/ajax/libs/jquery/1.8/jquery.min.js\"></script>");
+        out.println("<script type='text/javascript' src='/js/manager.js'></script>");
         out.println("</body>");
         out.println("</html>");
     }
@@ -114,11 +115,11 @@ public class MyUserAccountManagementServlet   extends HttpServlet
     public void printUserAccountLinks(PrintWriter out)
     {
         out.println("<p>Welcome to your account management ! you have the following options:</p>");
-        out.println("<ul class=linklistul >");
-        out.println("<li class=linklistli><a href=\"/gsn/MyUserDetailUpdateServlet\">Update your user details</a></LI>");
-        out.println("<LI class=linklistli><a href=\"/gsn/MyUserUpdateServlet\">Update your access rights</a></LI>");
-        out.println("<LI class=linklistli><a href=\"/gsn/MyDataSourceCandidateRegistrationServlet\">Upload new virtual sensor files</a></LI>");
-        out.println("<LI class=linklistli><a href=\"/gsn/MyOwnerWaitingListServlet\">Check the waiting list for your virtual sensor(s)</a></LI>");
+        out.println("<ul class=button-group >");
+        out.println("<li class=linklistli><a class='button tiny' href=\"/gsn/MyUserDetailUpdateServlet\">Update your user details</a></LI>");
+        out.println("<LI class=linklistli><a class='button tiny' href=\"/gsn/MyUserUpdateServlet\">Update your access rights</a></LI>");
+        out.println("<LI class=linklistli><a class='button tiny' href=\"/gsn/MyDataSourceCandidateRegistrationServlet\">Upload new virtual sensor files</a></LI>");
+        out.println("<LI class=linklistli><a class='button tiny' href=\"/gsn/MyOwnerWaitingListServlet\">Check the waiting list for your virtual sensor(s)</a></LI>");
         out.println("</ul>");
     }
 

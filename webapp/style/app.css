@@ -2,6 +2,31 @@ html, body {
     font-size: 14px;
 }
 
-body {
-    font-family: 'Open Sans', 'Ubuntu', 'Arial', 'Helvetica';
+h1, h2, h3, h4, h5, h6, body {
+    font-family: 'Open sans', 'Ubuntu', 'Arial', 'Helvetica';
+}
+
+
+
+.overview,
+.gsn_chart {
+    position: relative;
+    min-height: 250px;
+}
+
+button, .button {
+    font-family: Ubuntu, Arial, "Helvetica Neue";
+    font-weight: bold;
+}
+
+button.tiny, .button.tiny {
+    font-size: 13px;
+}
+
+button.tiny, .button.small {
+    font-size: 15px;
+}
+
+.box td > input {
+    margin: 0;
 }

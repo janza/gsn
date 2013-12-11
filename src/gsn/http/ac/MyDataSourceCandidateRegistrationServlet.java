@@ -65,33 +65,19 @@ public class MyDataSourceCandidateRegistrationServlet extends HttpServlet
 	{
         out.println("<HTML>");
         out.println("<HEAD>");
-        //For Java Script!!
-        //this.printEmbeddedJS(out);
-        out.println("<script type=\"text/javascript\" src=\"/js/acjavascript.js\"></script>");
-		out.println("<TITLE>Virtual Sensor Registration Form</TITLE>");
-        out.println(" <link rel=\"stylesheet\" media=\"screen\" type=\"text/css\" href=\"/style/acstyle.css\"/>");
-        //printStyle(out);
+        out.println("<TITLE>Access Rights Management</TITLE>");
+        out.println(" <link rel=\"stylesheet\" media=\"screen\" type=\"text/css\" href=\"/style/foundation.css\"/>");
+        out.println(" <link rel=\"stylesheet\" media=\"screen\" type=\"text/css\" href=\"/style/app.css\"/>");
         out.println("</HEAD>");
         out.println("<body>");
-
-        out.println("<div id=\"container\">");
-        out.println("<div class=box>");
+        out.println("<div class=\"columns\"><br /><br /><br /></div><div class=\"contain-to-grid fixed\"><nav class=\"top-bar sticky\"><div class=\"row\"><ul class=\"title-area\"><li class=\"name\"><h1><a href='#'><strong>GSN Server</strong></a></h1></li></ul><strong><section id=\"navigation\" class=\"top-bar-section\"></section></strong></div></nav></div>");
+        out.println("<div id=\"container\" class=row>");
+        out.println("<div class='box columns'>");
+        out.println("<h1>Virtual Sensor Registration Form</h1>");
 
 	}
     private void printLayoutMastHead(PrintWriter out, User user)
     {
-        out.println("<div id=\"masthead\">");
-
-        out.println("<div class=\"image_float\"><img src=\"/style/gsn-mark.png\" alt=\"GSN logo\" /></div><br>");
-        out.println("<h1>Virtual Sensor Registration Form </h1>");
-        out.println("<div class=\"spacer\"></div>");
-
-        out.println("</div>");
-        out.println("<div id=\"mastheadborder\">");
-        this.printLinks(out);
-        this.printUserName(out, user);
-        out.println("<br><br>");
-        out.println("</div>");
     }
     private void printLayoutContent(PrintWriter out)
     {
@@ -100,13 +86,16 @@ public class MyDataSourceCandidateRegistrationServlet extends HttpServlet
     private void printLayoutFooter(PrintWriter out)
     {
         out.println("</div>");
-        out.println("<div id=\"footer\">");
+        out.println("<div id=\"footer\" class='medium-12 columns'> ");
         out.println(" <p align=\"center\"><FONT COLOR=\"#000000\"/>Powered by <a class=\"nonedecolink\" href=\"http://globalsn.sourceforge.net/\">GSN</a>,  Distributed Information Systems Lab, EPFL 2010</p>");
-        out.println("</div>");
-        out.println("</div>");
-        out.println("</div>");
+        out.println("</div>");//footer
+        out.println("</div>");//box
+        out.println("</div>");//container
+        out.println("<script src=\"//ajax.googleapis.com/ajax/libs/jquery/1.8/jquery.min.js\"></script>");
+        out.println("<script type='text/javascript' src='/js/manager.js'></script>");
         out.println("</body>");
         out.println("</html>");
+
     }
 
     private void printLinks(PrintWriter out)
@@ -129,16 +118,16 @@ public class MyDataSourceCandidateRegistrationServlet extends HttpServlet
     private void printForm(PrintWriter out)
     {
         out.println("<p>Please enter the virtual sensor name and upload the related file:</p>");
-        out.println(" <form ENCTYPE=\"multipart/form-data\" method=\"post\" id=\"enquiryform\">");
-        out.println("<div class=formcaontainer>");
+        out.println(" <form class='row' ENCTYPE=\"multipart/form-data\" method=\"post\" id=\"enquiryform\">");
+        out.println("<div class=columns medium-8>");
         out.println("<fieldset class=loginhandlerfieldset>");
         //out.println("<legend>Upload File</legend>");
         //out.println("<br>");
         //out.println("Please enter the virtual sensor name and upload the related file:<BR><BR>");
         this.printFormInputs(out);
         out.println("</fieldset>");
-        out.println("</div>"); //end of form caontainer
         this.printFormButtons(out);
+        out.println("</div>"); //end of form caontainer
         out.println("</form>");
     }
 
@@ -147,16 +136,16 @@ public class MyDataSourceCandidateRegistrationServlet extends HttpServlet
     {
 
         out.println(" <p style=line-height:150%><label for=\"virtual sensor name\">virtual sensor name</label>");
-        out.println("<input type=\"text\" name=\"vsname\" id=\"vsname\" tabindex=\"1\" /><br></p>");
+        out.println("<input type=\"text\" name=\"vsname\" id=\"vsname\" tabindex=\"1\" /></p>");
         out.println("<p><label for=\"file\">Upload file </label>");
-        out.println("<input type=\"FILE\" name=\"file\" id=\"file\" tabindex=\"2\" /><br></p>");
+        out.println("<input type=\"FILE\" name=\"file\" id=\"file\" tabindex=\"2\" /></p>");
 
 
     }
-    
+
     private void printFormButtons(PrintWriter out)
     {
-        out.println("<input type=\"submit\" class=fileuploaderbuttonstyle  value=\"Submit \" tabindex=\"3\" />");
+        out.println("<input type=\"submit\" class=button  value=\"Submit \" tabindex=\"3\" />");
     }
 
     /****************************************** AC related Methods******************************************************/
@@ -205,7 +194,7 @@ public class MyDataSourceCandidateRegistrationServlet extends HttpServlet
                 }
                 else
                 {
-                    
+
                     //out.println("This datasource name exists already in DB. Choose another name! <BR>");
                     //printError(out);
                     this.managaeUserAlert(out, "This datasource name exists already in DB. Choose another name! ",true );

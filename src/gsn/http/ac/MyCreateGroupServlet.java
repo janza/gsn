@@ -54,7 +54,7 @@ public class MyCreateGroupServlet  extends HttpServlet
                 printLayoutContent(out);
 		        printForm(out);
 		        printLayoutFooter(out);
-               
+
            }
        }
 
@@ -74,33 +74,18 @@ public class MyCreateGroupServlet  extends HttpServlet
 	{
         out.println("<HTML>");
         out.println("<HEAD>");
-
-
-        out.println("<script type=\"text/javascript\" src=\"/js/acjavascript.js\"></script>");
-		out.println("<TITLE>Create New Group Form</TITLE>");
-        out.println(" <link rel=\"stylesheet\" media=\"screen\" type=\"text/css\" href=\"/style/acstyle.css\"/>");
-
+        out.println("<TITLE>Access Rights Management</TITLE>");
+        out.println(" <link rel=\"stylesheet\" media=\"screen\" type=\"text/css\" href=\"/style/foundation.css\"/>");
+        out.println(" <link rel=\"stylesheet\" media=\"screen\" type=\"text/css\" href=\"/style/app.css\"/>");
         out.println("</HEAD>");
         out.println("<body>");
-
-        out.println("<div id=\"container\">");
-        out.println("<div class=box>");
-
+        out.println("<div class=\"columns\"><br /><br /><br /></div><div class=\"contain-to-grid fixed\"><nav class=\"top-bar sticky\"><div class=\"row\"><ul class=\"title-area\"><li class=\"name\"><h1><a href='#'><strong>GSN Server</strong></a></h1></li></ul><strong><section id=\"navigation\" class=\"top-bar-section\"></section></strong></div></nav></div>");
+        out.println("<div id=\"container\" class=row>");
+        out.println("<div class='box columns'>");
+        out.println("<h1>Create New Group Form</h1>");
 	}
     private void printLayoutMastHead(PrintWriter out, User user)
     {
-        out.println("<div id=\"masthead\">");
-
-        out.println("<div class=\"image_float\"><img src=\"/style/gsn-mark.png\" alt=\"GSN logo\" /></div><br>");
-        out.println("<h1>Create New Group Form</h1>");
-        out.println("<div class=\"spacer\"></div>");
-
-        out.println("</div>");
-        out.println("<div id=\"mastheadborder\">");
-        this.printLinks(out);
-        this.printUserName(out, user);
-        out.println("<br><br>");
-        out.println("</div>");
     }
     private void printLayoutContent(PrintWriter out)
     {
@@ -109,11 +94,13 @@ public class MyCreateGroupServlet  extends HttpServlet
     private void printLayoutFooter(PrintWriter out)
     {
         out.println("</div>");
-        out.println("<div id=\"footer\">");
+        out.println("<div id=\"footer\" class='medium-12 columns'> ");
         out.println(" <p align=\"center\"><FONT COLOR=\"#000000\"/>Powered by <a class=\"nonedecolink\" href=\"http://globalsn.sourceforge.net/\">GSN</a>,  Distributed Information Systems Lab, EPFL 2010</p>");
-        out.println("</div>");
-        out.println("</div>");
-        out.println("</div>");
+        out.println("</div>");//footer
+        out.println("</div>");//box
+        out.println("</div>");//container
+        out.println("<script src=\"//ajax.googleapis.com/ajax/libs/jquery/1.8/jquery.min.js\"></script>");
+        out.println("<script type='text/javascript' src='/js/manager.js'></script>");
         out.println("</body>");
         out.println("</html>");
     }
@@ -178,7 +165,7 @@ public class MyCreateGroupServlet  extends HttpServlet
         out.println("&nbsp&nbsp<INPUT TYPE=RESET class=sumitbuttonstyle VALUE=\"Reset\">");
         //out.println("</table>");
     }
- 
+
 
     private void printDSList(PrintWriter out,Vector dsNames)
     {
@@ -211,7 +198,7 @@ public class MyCreateGroupServlet  extends HttpServlet
 
     /****************************************** AC related Methods*******************************************************/
     /********************************************************************************************************************/
-    
+
      private void handleForm(HttpServletRequest req,HttpServletResponse res) throws IOException
 	{
 		HttpSession session = req.getSession();
@@ -231,14 +218,14 @@ public class MyCreateGroupServlet  extends HttpServlet
                 ctdb =new ConnectToDB();
                 String originalgroupname=pm.valueForName("groupname");
                 String groupname= originalgroupname.replace(" ","");
-                
+
 
                 if(ctdb.valueExistsForThisColumn(new Column("GROUPNAME",groupname),"ACGROUP")==false )
                 {
                     Vector vector = ctdb.getDataSourceListForParameterSet(pm);
                      if(vector.size()!= 0)
                      {
-                        
+
                         Group group= new Group(groupname,vector);
                         if(ctdb.registerGroup(group)== true)
                         {
@@ -358,7 +345,7 @@ public class MyCreateGroupServlet  extends HttpServlet
 
     /****************************************** DB related Methods*******************************************/
     /********************************************************************************************************************/
-    
+
      private Vector getDSNames()
     {
         Vector dsNames =null;
@@ -384,6 +371,6 @@ public class MyCreateGroupServlet  extends HttpServlet
         return dsNames;
     }
 
-    
+
 
 }

@@ -236,18 +236,7 @@ function csv_to_json(tag, callback, format) {
             vss: option_list_key('vss', virtual_sensor_to_fields, "All Virtual Sensors"),
             fields: option_list_key('fields', field_to_virtual_sensor, "All Fields")
         }));
-        $('.vss').change(function () {
-            var vs = $(this).val();
-            if (vs == 'All') {
-                $(this).next("select").replaceWith(option_list_key('fields', field_to_virtual_sensor, "All Fields"));
-            } else {
-                $(this).next("select").replaceWith(option_list_value('fields', virtual_sensor_to_fields[vs], "All Fields"));
-            }
-        });
-        $('.remove-criterion').click(function () {
-            $(this).parent().remove();
-            $('.join:first').hide();
-        });
+
         $('.join:first').hide();
     }
 
@@ -391,12 +380,13 @@ $(function () {
         return true;
     });
 
-    $doc.on('click', '.remove-criterion', function (e) {
+    $doc.on('click', '.remove-criterion .remove-condition', function (e) {
         e.preventDefault();
-        var criterion = $(this).closest('.criterion');
+        var criterion = $(this).closest('.criterion, .condition');
         if (criterion.parent().children().size() > 1) {
             criterion.remove();
         }
+        $('.join:first').hide();
     });
 
     $doc.on('change', '.vss', function() {
@@ -468,10 +458,10 @@ $(function () {
         csv_to_json($(this), drawGrid, 'iso');
     });
 
-    $('.accordion').accordion({
-        header: ".ui-accordion-header",
-        clearStyle: true
-    });
+    // $('.accordion').accordion({
+    //     header: ".ui-accordion-header",
+    //     clearStyle: true
+    // });
 
     $('.tabs ul').tabs();
 
