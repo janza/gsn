@@ -1,5 +1,4 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
-"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
 
 <head>
@@ -124,9 +123,9 @@
     <script type="text/javascript" src="js/jquery-tooltip.js"></script>
 
     <!-- Include Map engine-->
-    <script src="http://maps.google.com/maps?file=api&amp;v=2&amp;key=ABQIAAAA2MV0HBY9S6-aGXtjN0b1ZxTNHpjHnpWHHgdGqnMBUpwQOS9hiRQYia2Wq5RjKhXafOPvhLZP4RAQOA" type="text/javascript"></script>
+    <script src="//maps.google.com/maps?file=api&amp;v=2&amp;key=ABQIAAAA2MV0HBY9S6-aGXtjN0b1ZxTNHpjHnpWHHgdGqnMBUpwQOS9hiRQYia2Wq5RjKhXafOPvhLZP4RAQOA" type="text/javascript"></script>
     <!--<script src="http://api.maps.yahoo.com/ajaxymap?v=3.0&appid=YahooDemo" type="text/javascript"></script>-->
-    <script src="http://ecn.dev.virtualearth.net/mapcontrol/mapcontrol.ashx?v=6.3" type="text/javascript"></script>
+    <script src="//ecn.dev.virtualearth.net/mapcontrol/mapcontrol.ashx?v=6.3" type="text/javascript"></script>
     <script type="text/javascript" src="js/mapstraction.js"></script>
 
     <script type="text/javascript" src="js/constants.js"></script>
@@ -134,6 +133,10 @@
     <script type="text/javascript" src="js/gsn.js"></script>
 
     <script type="text/javascript">
+
+        if (location.protocol.match('https')) {
+            location.href = location.href.replace('https', 'http').replace(':8443', ':22001');
+        }
         <!--//<![CDATA[
         var mapProvider = null;
 
