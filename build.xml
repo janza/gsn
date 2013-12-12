@@ -62,7 +62,7 @@
     <target name="build" depends="setup" description="Compile the cource code.">
         <javac debug="true" srcdir="${src.dir}" optimize="off"
                destdir="${build.dir}" failonerror="true" classpathref="classpath">
-            <compilerarg value="-encoding ISO-8859-1" />
+            <compilerarg line="-encoding utf-8"/>
             <exclude name="**/TCPConnPool.java"/>
             <exclude name="**/NetworkUtility.java"/>
         </javac>
