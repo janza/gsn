@@ -242,7 +242,7 @@ function csv_to_json(tag, callback, format) {
 
     function prepare_form_for_submission(tag) {
         var counter = 0;
-        tag.parents('form').find('.data-outputs-container li').each(function () {
+        tag.parents('form').find('.data-outputs-container .criterion').each(function () {
             $(this).find('.vss').each(function () {
                 $(this).attr('name', 'vs[' + counter + ']');
             });
@@ -252,7 +252,7 @@ function csv_to_json(tag, callback, format) {
             counter++;
         });
         counter = 0;
-        tag.parents('form').find('.conditions-container li').each(function () {
+        tag.parents('form').find('.conditions-container .condition').each(function () {
             $(this).find('.vss').each(function () {
                 $(this).attr('name', 'c_vs[' + counter + ']');
             });
@@ -264,9 +264,15 @@ function csv_to_json(tag, callback, format) {
             });
             $(this).find('.max').each(function () {
                 $(this).attr('name', 'c_max[' + counter + ']');
+                if (!$(this).val()) {
+                    $(this).val('+Inf');
+                }
             });
             $(this).find('.min').each(function () {
                 $(this).attr('name', 'c_min[' + counter + ']');
+                if (!$(this).val()) {
+                    $(this).val('-Inf');
+                }
             });
             counter++;
         });
@@ -380,7 +386,7 @@ $(function () {
         return true;
     });
 
-    $doc.on('click', '.remove-criterion .remove-condition', function (e) {
+    $doc.on('click', '.remove-criterion, .remove-condition', function (e) {
         e.preventDefault();
         var criterion = $(this).closest('.criterion, .condition');
         if (criterion.parent().children().size() > 1) {
